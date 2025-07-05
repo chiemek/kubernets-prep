@@ -5181,6 +5181,14 @@
         onSubmit,
         onRestart,
       }) {
+        if (!quizData || !Array.isArray(quizData) || quizData.length === 0) {
+          return (
+            <div className="text-center text-red-400">
+              Error: Quiz data is not available.
+            </div>
+          );
+        }
+
         return (
           <div className="max-w-4xl mx-auto p-8 bg-gray-800 rounded-xl shadow-2xl">
             <h1 className="text-4xl font-bold text-center mb-8 text-blue-400">
@@ -5241,13 +5249,10 @@
                           <input
                             type="radio"
                             name={`question${index}`}
-                            checked={
-                              selectedAnswers[index] === (option[0] || option)
-                            }
-                            onChange={() =>
-                              onAnswerChange(index, option[0] || option)
-                            }
+                            checked={selectedAnswers[index] === option}
+                            onChange={() => onAnswerChange(index, option)}
                             className="form-radio h-5 w-5 text-blue-500"
+                            aria-label={`${q.question} option ${option}`}
                           />
                           <span>{option}</span>
                         </label>
@@ -5259,6 +5264,9 @@
                   <button
                     onClick={onSubmit}
                     className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
+                    disabled={
+                      Object.keys(selectedAnswers).length < quizData.length
+                    }
                   >
                     Submit Quiz
                   </button>
@@ -5347,6 +5355,7 @@
                           ? "bg-blue-600 text-white"
                           : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                       }`}
+                      aria-label={`Switch to ${quiz.title}`}
                     >
                       {quiz.title}
                     </button>
